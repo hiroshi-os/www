@@ -54,6 +54,18 @@
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/* Without this, a bare `border-t` takes the text colour: a hard white rule
+   between the sections instead of a hairline. */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--border);
+  }
+}
+
 html {
   scrollbar-gutter: stable;
 }
