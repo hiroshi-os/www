@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PixelThemeSwitcher } from "../components/ThemeSwitcher";
@@ -13,7 +14,7 @@ const ISSUES = `${REPO}/issues`;
 
 const HIROSHI_ASCII = `██   ██  ███████  ██████    ██████   ██████  ██   ██  ███████
 ██   ██    ██     ██   ██  ██    ██ ██       ██   ██    ██
-██████    ██     ██████   ██    ██  ██████  ███████    ██
+███████    ██     ██████   ██    ██  ██████  ███████    ██
 ██   ██    ██     ██   ██  ██    ██       ██ ██   ██    ██
 ██   ██  ███████  ██   ██   ██████   ██████  ██   ██  ███████`;
 
@@ -47,20 +48,18 @@ function useGlitchTitle() {
   return { display, isHovered, setIsHovered };
 }
 
-function InteractiveTitle() {
+function BlockTitle() {
   const { display, isHovered, setIsHovered } = useGlitchTitle();
 
   return (
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="mb-10 text-center select-none overflow-x-auto max-w-full cursor-pointer"
+      className="select-none overflow-x-auto max-w-full cursor-pointer"
     >
       <pre
-        className={`text-[10px] sm:text-xs leading-none font-bold tracking-tight inline-block text-left transition-colors duration-150 ${
-          isHovered
-            ? "text-accent-500 dark:text-accent-400 font-mono"
-            : "dark:text-zinc-50 text-zinc-900 font-mono"
+        className={`block-art text-[9px] sm:text-[11px] leading-[1.15] font-bold tracking-tight inline-block text-left transition-colors duration-150 ${
+          isHovered ? "text-brand" : "text-foreground"
         }`}
       >
         {display}
@@ -69,27 +68,81 @@ function InteractiveTitle() {
   );
 }
 
-function GiantInteractiveTitle() {
-  const { display, isHovered, setIsHovered } = useGlitchTitle();
-
+function Icon({ path, className = "" }: { path: string; className?: string }) {
   return (
-    <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="text-center select-none overflow-hidden cursor-pointer w-full flex justify-center py-10"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`size-4 text-muted-foreground ${className}`}
+      aria-hidden="true"
     >
-      <pre
-        className={`text-[3vw] md:text-[2vw] leading-none font-bold tracking-tight inline-block text-left transition-colors duration-150 ${
-          isHovered
-            ? "text-accent-500 dark:text-accent-400 font-mono"
-            : "dark:text-zinc-50 text-zinc-900 font-mono"
-        }`}
-      >
-        {display}
-      </pre>
-    </div>
+      <path d={path} />
+    </svg>
   );
 }
+
+const FEATURES = [
+  {
+    icon: "M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z",
+    title: "Native down to the frame",
+    body: "React on GPUI, the GPU accelerated framework behind Zed. Instant launch, smooth scrolling through years of transcript, no Electron.",
+  },
+  {
+    icon: "M12.83 2.18a2 2 0 00-1.66 0L2.6 6.08a1 1 0 000 1.83l8.58 3.91a2 2 0 001.66 0l8.58-3.9a1 1 0 000-1.83z M2 12a1 1 0 00.58.91l8.6 3.91a2 2 0 001.65 0l8.58-3.9A1 1 0 0022 12 M2 17a1 1 0 00.58.91l8.6 3.91a2 2 0 001.65 0l8.58-3.9A1 1 0 0022 17",
+    title: "One surface, no DOM",
+    body: "The transcript, the composer, the panels and the window chrome are a single GPU surface. There is no browser engine between you and the work.",
+  },
+  {
+    icon: "M4 5h16v14H4z M4 9h16",
+    title: "The window is yours",
+    body: "No native titlebar. The chrome spans the whole window, and the titlebar drags it, maximizes it and restores it on every platform.",
+  },
+  {
+    icon: "M4 17l6-6-6-6 M12 19h8",
+    title: "Every surface next to the work",
+    body: "A browser, a terminal, a file tree and a review panel in the right drawer, so the run and the code it touches sit side by side.",
+  },
+  {
+    icon: "M10 16h.01 M2.212 11.577a2 2 0 00-.212.896V18a2 2 0 002 2h16a2 2 0 002-2v-5.527a2 2 0 00-.212-.896L18.55 5.11A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z M21.946 12.013H2.054 M6 16h.01",
+    title: "Local by architecture",
+    body: "The workspace, the transcripts and the configuration live on your disk. No account, no telemetry, no cloud between you and your agents.",
+  },
+  {
+    icon: "M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8 M21 3v5h-5 M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16 M8 16H3v5",
+    title: "Quietly current",
+    body: "The integration suite drives the real app on the GPU test renderer, and it runs on macOS and Windows on every push.",
+  },
+];
+
+const QUESTIONS = [
+  {
+    question: "Is this another Electron app?",
+    answer:
+      "No. Hiroshi is React on GPUIX, the React reconciler over Zed's native GPUI engine. There is no browser engine and no web view: the transcript, the composer and the window chrome are painted on the GPU at 120 frames per second.",
+  },
+  {
+    question: "What do I need to run it?",
+    answer:
+      "Bun and a GPU. Metal on macOS, Direct3D on Windows, Vulkan on Linux. The native addon ships prebuilt for all three, so there is no Rust toolchain to install.",
+  },
+  {
+    question: "Where does my data live?",
+    answer:
+      "On your disk. The workspace, the transcripts and the configuration are local files. No account, no telemetry, no cloud between you and your agents.",
+  },
+  {
+    question: "Is it finished?",
+    answer:
+      "Not yet. The cockpit is there, the orchestration behind it is not. The 1.0.0 milestone tracks what is left, and the issues under it are open to anyone.",
+  },
+];
 
 const STACK = [
   { name: "GPUIX", href: "https://github.com/remorses/gpuix" },
@@ -98,60 +151,21 @@ const STACK = [
   { name: "Bun", href: "https://bun.sh" },
 ];
 
-const PILLARS = [
-  {
-    title: "The cockpit",
-    body: "A transcript, a composer, a conversation sidebar, an inspector and a settings view, with the model, the reasoning level, the access mode and the mode right under the field.",
-  },
-  {
-    title: "The surfaces",
-    body: "A browser, a terminal, a file browser and a review panel in the right drawer, so the run and the work it touches sit next to each other.",
-  },
-  {
-    title: "The window",
-    body: "No native titlebar. The chrome spans the whole window, and the titlebar drags it, maximizes it and restores it on every platform.",
-  },
-];
-
-const STEPS = [
-  {
-    title: "Run.",
-    body: "Clone the repository, install with Bun, and start the cockpit. The GPUIX native addon ships prebuilt for macOS, Windows and Linux.",
-  },
-  {
-    title: "Drive.",
-    body: "Send a draft. The transcript fills with the turns of the run, and the inspector reports what the agents are doing while they do it.",
-  },
-  {
-    title: "Watch.",
-    body: "Open the browser, the terminal, the files or the review surface on the right. The command palette is one keypress away.",
-  },
-];
-
-const FAQ = [
-  {
-    question: "Is Hiroshi a web app?",
-    answer:
-      "No. There is no Electron, no web view and no DOM. The interface is painted on the GPU through GPUIX, the React reconciler over Zed's native GPUI engine, at 120 frames per second.",
-  },
-  {
-    question: "What does it need to run?",
-    answer:
-      "Bun and a GPU. Metal on macOS, Direct3D on Windows, Vulkan on Linux. The native addon is prebuilt for all three, so there is no Rust toolchain to install.",
-  },
-  {
-    question: "Where do the models run?",
-    answer:
-      "Wherever you point them. The cockpit is the interface to a run: it drives the agents, holds the transcript, and keeps the surfaces next to the work.",
-  },
-];
-
-function NavLink({ href, children, external = true }: { href: string; children: React.ReactNode; external?: boolean }) {
+function ExternalLink({
+  href,
+  children,
+  className = "",
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <a
       href={href}
-      {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-      className="hover:text-zinc-900 dark:hover:text-zinc-100 text-zinc-650 dark:text-zinc-400 transition"
+      target="_blank"
+      rel="noreferrer"
+      className={`transition-colors ${className}`}
     >
       {children}
     </a>
@@ -159,329 +173,254 @@ function NavLink({ href, children, external = true }: { href: string; children: 
 }
 
 export default function HomePage() {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <div className="relative min-h-screen bg-zinc-50 dark:bg-[#09090b] text-zinc-800 dark:text-zinc-300 flex flex-col font-mono selection:bg-accent-500/20 selection:text-accent-300 transition-colors duration-200">
-      <div className="dither-overlay" />
-      {/* Custom Centered Navigation Bar */}
-      <nav
-        className={`bg-zinc-50 dark:bg-[#09090b] px-6 py-4 flex flex-wrap items-center justify-center gap-6 text-sm tracking-wider font-mono select-none w-full sticky top-0 z-50 transition-all duration-200 ${
-          isScrolled
-            ? "border-b border-zinc-200 dark:border-zinc-800"
-            : "border-b border-transparent"
-        }`}
-      >
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="h-5 w-5 border border-zinc-700 bg-zinc-900 flex items-center justify-center font-bold text-zinc-100 text-[10px]">
-            H
-          </div>
-          <span className="font-bold tracking-widest text-zinc-900 dark:text-zinc-100">
-            HIROSHI
-          </span>
-        </Link>
+    <div className="min-h-dvh bg-background text-foreground antialiased">
+      <div className="mx-auto w-full max-w-[1100px] border-border/70 md:border-x">
+        <header className="flex h-16 items-center justify-between px-5 md:px-10">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image
+              src="/icon.svg"
+              alt=""
+              width={32}
+              height={32}
+              className="size-8 rounded-[6px]"
+            />
+            <span className="text-[15px] font-semibold tracking-tight">Hiroshi</span>
+          </Link>
 
-        <span className="text-zinc-300 dark:text-zinc-800">|</span>
-
-        <NavLink href={DOCS}>Docs</NavLink>
-        <NavLink href={CHANGELOG}>Changelog</NavLink>
-        <NavLink href={REPO}>Repository</NavLink>
-        <NavLink href={RELEASES}>Releases</NavLink>
-
-        <span className="text-zinc-305 dark:text-zinc-800">|</span>
-
-        <NavLink href={`${DOCS}/getting-started`} external={false}>
-          <span className="custom-download-btn px-4 py-1.5 rounded text-xs font-semibold transition">
-            Get started
-          </span>
-        </NavLink>
-
-        <PixelThemeSwitcher />
-      </nav>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center pt-40 pb-20 px-6 max-w-6xl mx-auto w-full relative z-10">
-        <InteractiveTitle />
-
-        {/* Hero Copy */}
-        <div className="text-center max-w-2xl mb-14">
-          <h2 className="text-xl dark:text-zinc-100 text-zinc-900 font-semibold mb-5 tracking-tight">
-            A GPU-native cockpit for multi-agent development swarms
-          </h2>
-          <p className="text-sm dark:text-zinc-300 text-zinc-600 leading-relaxed font-sans">
-            Hiroshi is a multi-agent orchestration cockpit rendered on the GPU
-            with GPUIX. No Electron, no web view: the transcript, the composer
-            and the window chrome are one GPU surface, painted at 120 frames
-            per second.
-          </p>
-        </div>
-
-        {/* Hero CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 mb-20 w-full sm:w-auto">
-          <a
-            href={`${DOCS}/getting-started`}
-            target="_blank"
-            rel="noreferrer"
-            className="w-full sm:w-auto bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-950 px-8 py-3.5 rounded-lg text-sm font-semibold transition flex items-center justify-center space-x-2 font-sans shadow"
-          >
-            <span>Get started</span>
-            <svg
-              className="w-4.5 h-4.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="flex items-center gap-5">
+            <ExternalLink
+              href={REPO}
+              className="rounded-full text-muted-foreground hover:text-foreground"
+              aria-label="GitHub"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.5"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              ></path>
-            </svg>
-          </a>
-
-          <a
-            href={REPO}
-            target="_blank"
-            rel="noreferrer"
-            className="w-full sm:w-auto border dark:border-zinc-800 border-zinc-300 dark:bg-zinc-900/30 bg-zinc-100/50 hover:dark:bg-zinc-900/80 hover:dark:border-zinc-200 text-zinc-700 dark:text-zinc-200 px-8 py-3.5 rounded-lg text-sm font-semibold transition flex items-center justify-center space-x-2 font-sans"
-          >
-            <span>Read the source</span>
-            <span className="text-zinc-400">→</span>
-          </a>
-        </div>
-
-        {/* Installation Terminal Box */}
-        <div className="w-full max-w-2xl border dark:border-zinc-800 border-zinc-300 bg-zinc-100 dark:bg-[#18181b] rounded-lg overflow-hidden shadow-sm mb-28 font-mono">
-          <div className="flex items-center justify-between px-4 py-2 border-b dark:border-zinc-800 border-zinc-200 bg-zinc-250 dark:bg-zinc-900/50 text-xs dark:text-zinc-400 text-zinc-650">
-            <div className="flex items-center space-x-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-700" />
-              <span className="w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-700" />
-              <span className="w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-700" />
-            </div>
-            <span>bash</span>
-            <div className="w-10" />
-          </div>
-          <div className="p-5 text-sm dark:text-zinc-100 text-zinc-800 space-y-1 select-all overflow-x-auto leading-relaxed">
-            <div className="flex">
-              <span className="text-zinc-400 dark:text-zinc-600 mr-3 select-none">
-                $
-              </span>
-              git clone https://github.com/hiroshi-os/Hiroshi
-            </div>
-            <div className="flex">
-              <span className="text-zinc-400 dark:text-zinc-600 mr-3 select-none">
-                $
-              </span>
-              cd Hiroshi
-            </div>
-            <div className="flex">
-              <span className="text-zinc-400 dark:text-zinc-600 mr-3 select-none">
-                $
-              </span>
-              bun install
-            </div>
-            <div className="flex">
-              <span className="text-zinc-400 dark:text-zinc-600 mr-3 select-none">
-                $
-              </span>
-              bun run dev
-            </div>
-          </div>
-        </div>
-
-        {/* Powered by */}
-        <div className="w-full text-center mb-28">
-          <div className="text-xs uppercase tracking-widest dark:text-zinc-500 text-zinc-400 mb-10 font-bold">
-            [ Powered by ]
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-12 max-w-4xl mx-auto select-none">
-            {STACK.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                target="_blank"
-                rel="noreferrer"
-                className="text-lg font-bold tracking-widest text-zinc-400 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100 transition duration-200"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="size-6"
+                fill="currentColor"
+                aria-hidden="true"
               >
-                {item.name}
-              </a>
-            ))}
-          </div>
-        </div>
+                <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5c.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34c-.46-1.16-1.11-1.47-1.11-1.47c-.91-.62.07-.6.07-.6c1 .07 1.53 1.03 1.53 1.03c.87 1.52 2.34 1.07 2.91.83c.09-.65.35-1.09.63-1.34c-2.22-.25-4.55-1.11-4.55-4.92c0-1.11.38-2 1.03-2.71c-.1-.25-.45-1.29.1-2.64c0 0 .84-.27 2.75 1.02c.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02c.55 1.35.2 1.39.1 2.64c.65.71 1.03 1.6 1.03 2.71c0 3.82-2.34 4.66-4.57 4.91c.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2" />
+              </svg>
+            </ExternalLink>
 
-        {/* What the cockpit is */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-32 text-sm tracking-normal font-sans">
-          {PILLARS.map((pillar) => (
-            <div
-              key={pillar.title}
-              className="p-6 border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/10 bg-zinc-150/10 rounded-xl flex flex-col justify-between space-y-6"
+            <ExternalLink
+              href={`${DOCS}/getting-started`}
+              className="inline-flex h-7 items-center rounded-[6px] bg-primary px-2.5 text-[0.8rem] font-medium text-primary-foreground transition-colors hover:bg-primary/80"
             >
-              <h4 className="font-semibold dark:text-zinc-100 text-zinc-900 text-base">
-                {pillar.title}
-              </h4>
-              <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                {pillar.body}
-              </p>
-            </div>
-          ))}
-        </div>
+              Get started
+            </ExternalLink>
 
-        {/* How It Works Section */}
-        <div className="w-full max-w-3xl mb-32">
-          <div className="flex justify-center mb-8">
-            <span className="border dark:border-zinc-800 border-zinc-200 text-xs dark:text-zinc-300 text-zinc-600 dark:bg-zinc-900 bg-zinc-100 px-4 py-1.5 rounded font-bold uppercase tracking-wider">
-              How it works
-            </span>
+            <PixelThemeSwitcher />
           </div>
+        </header>
 
-          <div className="space-y-8 font-sans text-sm">
-            {STEPS.map((step, index) => (
-              <div key={step.title} className="flex items-start space-x-5">
-                <span className="font-mono dark:text-zinc-500 text-zinc-400 font-bold text-base">
-                  {index + 1}.
-                </span>
-                <div>
-                  <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-1.5 text-base">
-                    {step.title}
-                  </h4>
-                  <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                    {step.body}
-                  </p>
+        <main>
+          <section className="px-5 pt-14 pb-14 md:px-10 md:pt-20">
+            <BlockTitle />
+
+            <div className="mt-12 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs text-muted-foreground">
+              <span className="flex size-3.5 items-center justify-center rounded-[3px] bg-brand text-[10px] font-bold text-white">
+                H
+              </span>
+              No Electron, no web view
+            </div>
+
+            <h1 className="mt-6 max-w-4xl text-4xl font-semibold tracking-[-0.03em] text-balance md:text-[3.4rem] md:leading-[1.04]">
+              One GPU native cockpit for every agent in the swarm.
+            </h1>
+
+            <p className="mt-5 max-w-[36rem] text-[17px] leading-relaxed text-pretty text-muted-foreground">
+              Hiroshi renders the whole cockpit on the GPU with GPUIX: the
+              transcript, the composer, the surfaces and the window chrome are
+              one surface at 120 frames per second, entirely on your machine.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <ExternalLink
+                href={`${DOCS}/getting-started`}
+                className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="size-4"
+                  aria-hidden="true"
+                >
+                  <path d="M12 15V3" />
+                  <path d="M21 15v4a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-4" />
+                  <path d="m7 10 5 5 5-5" />
+                </svg>
+                Get started
+              </ExternalLink>
+
+              <ExternalLink
+                href={REPO}
+                className="inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                Read the source
+                <span aria-hidden="true">→</span>
+              </ExternalLink>
+            </div>
+
+            <div className="mt-16">
+              <div className="eyebrow">Built on</div>
+              <div className="mt-4 flex flex-wrap items-center gap-x-7 gap-y-4">
+                {STACK.map((item) => (
+                  <ExternalLink
+                    key={item.name}
+                    href={item.href}
+                    className="text-[15px] font-semibold tracking-tight text-muted-foreground/70 hover:text-foreground"
+                  >
+                    {item.name}
+                  </ExternalLink>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="px-5 pb-14 md:px-10">
+            <div className="overflow-hidden rounded-xl border border-border/70 bg-card">
+              <Image
+                src="/cockpit.png"
+                alt="The Hiroshi cockpit: the conversation sidebar, the transcript and the composer"
+                width={1180}
+                height={820}
+                className="block h-auto w-full"
+              />
+            </div>
+          </section>
+
+          <section className="border-t">
+            <div className="px-5 pt-14 md:px-10">
+              <div className="eyebrow">Why native</div>
+              <div className="mt-8 grid grid-cols-1 gap-px border-t bg-border/70 sm:grid-cols-2 lg:grid-cols-3">
+                {FEATURES.map((feature) => (
+                  <div key={feature.title} className="bg-background p-6 md:p-8">
+                    <div className="flex items-center gap-2.5">
+                      <Icon path={feature.icon} />
+                    </div>
+                    <h3 className="mt-4 text-sm font-medium">{feature.title}</h3>
+                    <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+                      {feature.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="get-started" className="border-t px-5 py-16 md:px-10 md:py-20">
+            <div className="eyebrow">Get started</div>
+            <div className="mt-8 grid gap-10 md:grid-cols-2 md:items-start">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-[-0.02em] md:text-3xl">
+                  Clone it and run it.
+                </h2>
+                <p className="mt-4 max-w-[30rem] text-[15px] leading-relaxed text-muted-foreground">
+                  The native addon ships prebuilt for macOS, Windows and Linux,
+                  so there is no Rust toolchain to install. The repository
+                  carries the rules the app is built under, the integration
+                  suite, and the changelog.
+                </p>
+                <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+                  <ExternalLink
+                    href={REPO}
+                    className="inline-flex h-10 items-center gap-1.5 rounded-lg border px-4 text-sm font-medium transition-colors hover:bg-muted"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-4"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5c.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34c-.46-1.16-1.11-1.47-1.11-1.47c-.91-.62.07-.6.07-.6c1 .07 1.53 1.03 1.53 1.03c.87 1.52 2.34 1.07 2.91.83c.09-.65.35-1.09.63-1.34c-2.22-.25-4.55-1.11-4.55-4.92c0-1.11.38-2 1.03-2.71c-.1-.25-.45-1.29.1-2.64c0 0 .84-.27 2.75 1.02c.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02c.55 1.35.2 1.39.1 2.64c.65.71 1.03 1.6 1.03 2.71c0 3.82-2.34 4.66-4.57 4.91c.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2" />
+                    </svg>
+                    Repository
+                  </ExternalLink>
+                  <ExternalLink
+                    href={RELEASES}
+                    className="text-sm font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+                  >
+                    Releases
+                  </ExternalLink>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* FAQ Section */}
-        <div className="w-full max-w-3xl mb-32">
-          <div className="flex justify-center mb-8">
-            <span className="border dark:border-zinc-800 border-zinc-200 text-xs dark:text-zinc-300 text-zinc-600 dark:bg-zinc-900 bg-zinc-100 px-4 py-1.5 rounded font-bold uppercase tracking-wider">
-              Frequently asked questions
-            </span>
-          </div>
-
-          <div className="space-y-8 font-sans text-sm">
-            {FAQ.map((entry) => (
-              <div key={entry.question}>
-                <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-2 text-base">
-                  {entry.question}
-                </h4>
-                <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                  {entry.answer}
-                </p>
+              <div className="overflow-hidden rounded-lg border border-border/70 bg-card">
+                <div className="flex items-center justify-between border-b border-border/70 px-4 py-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="size-2.5 rounded-full bg-border" />
+                    <span className="size-2.5 rounded-full bg-border" />
+                    <span className="size-2.5 rounded-full bg-border" />
+                  </div>
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    bash
+                  </span>
+                  <div className="w-12" />
+                </div>
+                <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed">
+                  <code>
+                    <span className="text-muted-foreground">$ </span>
+                    {"git clone https://github.com/hiroshi-os/Hiroshi\n"}
+                    <span className="text-muted-foreground">$ </span>
+                    {"cd Hiroshi\n"}
+                    <span className="text-muted-foreground">$ </span>
+                    {"bun install\n"}
+                    <span className="text-muted-foreground">$ </span>
+                    {"bun run dev"}
+                  </code>
+                </pre>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          </section>
 
-        {/* Bottom CTA Block */}
-        <div className="w-full text-center border-t dark:border-zinc-900 border-zinc-200 pt-20 flex flex-col items-center">
-          <p className="text-sm dark:text-zinc-400 text-zinc-600 mb-8 font-sans">
-            The cockpit, the documentation, and the source. Everything runs on
-            your machine.
-          </p>
-          <a
-            href={`${DOCS}/getting-started`}
-            target="_blank"
-            rel="noreferrer"
-            className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-950 px-8 py-4 rounded-lg text-sm font-semibold transition flex items-center justify-center space-x-2 font-sans shadow"
-          >
-            <span>Get started</span>
-            <svg
-              className="w-4.5 h-4.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.5"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              ></path>
-            </svg>
-          </a>
-        </div>
-      </main>
+          <section className="border-t px-5 py-16 md:px-10 md:py-20">
+            <div className="eyebrow">Questions</div>
+            <div className="mt-8 divide-y divide-border/70 border-t border-border/70">
+              {QUESTIONS.map((entry) => (
+                <div key={entry.question} className="py-6 md:py-7">
+                  <h3 className="text-[15px] font-medium">{entry.question}</h3>
+                  <p className="mt-2 max-w-[46rem] text-sm leading-relaxed text-muted-foreground">
+                    {entry.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </main>
 
-      {/* Footer */}
-      <footer className="border-t dark:border-zinc-900 border-zinc-200 dark:bg-zinc-955/20 bg-zinc-100/20 px-6 py-16 text-sm font-sans">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-          <div>
-            <span className="text-xs uppercase tracking-wider dark:text-zinc-500 text-zinc-400 block mb-4 font-mono font-bold">
-              [Project]
-            </span>
-            <div className="space-y-2 dark:text-zinc-400 text-zinc-600">
-              <NavLink href={REPO}>Repository</NavLink>
-              <NavLink href={RELEASES}>Releases</NavLink>
-              <NavLink href={MILESTONE}>Milestone</NavLink>
-              <NavLink href={ISSUES}>Issues</NavLink>
+        <footer className="border-t px-5 py-8 md:px-10">
+          <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
+            <span>© 2026 Hiroshi</span>
+            <div className="flex items-center gap-5">
+              <ExternalLink href={DOCS} className="hover:text-foreground">
+                Docs
+              </ExternalLink>
+              <ExternalLink href={CHANGELOG} className="hover:text-foreground">
+                Changelog
+              </ExternalLink>
+              <ExternalLink href={MILESTONE} className="hover:text-foreground">
+                Milestone
+              </ExternalLink>
+              <ExternalLink href={ISSUES} className="hover:text-foreground">
+                Issues
+              </ExternalLink>
+              <ExternalLink href={REPO} className="hover:text-foreground">
+                github.com/hiroshi-os/Hiroshi
+              </ExternalLink>
             </div>
           </div>
-
-          <div>
-            <span className="text-xs uppercase tracking-wider dark:text-zinc-500 text-zinc-400 block mb-4 font-mono font-bold">
-              [Resources]
-            </span>
-            <div className="space-y-2 dark:text-zinc-400 text-zinc-600">
-              <NavLink href={DOCS}>Docs</NavLink>
-              <NavLink href={CHANGELOG}>Changelog</NavLink>
-              <NavLink href={`${DOCS}/architecture`}>Architecture</NavLink>
-              <NavLink href={`${DOCS}/window`}>The window</NavLink>
-            </div>
-          </div>
-
-          <div>
-            <span className="text-xs uppercase tracking-wider dark:text-zinc-500 text-zinc-400 block mb-4 font-mono font-bold">
-              [Community]
-            </span>
-            <div className="space-y-2 dark:text-zinc-400 text-zinc-600">
-              <NavLink href={ISSUES}>Open an issue</NavLink>
-              <NavLink href={`${REPO}/discussions`}>Discussions</NavLink>
-              <NavLink href={`${DOCS}/development`}>Development</NavLink>
-              <NavLink href={`${DOCS}/versioning`}>Versioning</NavLink>
-            </div>
-          </div>
-
-          <div>
-            <span className="text-xs uppercase tracking-wider dark:text-zinc-500 text-zinc-400 block mb-4 font-mono font-bold">
-              [Built with]
-            </span>
-            <div className="space-y-2 dark:text-zinc-400 text-zinc-600">
-              <NavLink href="https://github.com/remorses/gpuix">GPUIX</NavLink>
-              <NavLink href="https://github.com/zed-industries/zed">GPUI</NavLink>
-              <NavLink href="https://react.dev">React</NavLink>
-              <NavLink href="https://bun.sh">Bun</NavLink>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-xs dark:text-zinc-500 text-zinc-400 font-mono">
-          <span>© 2026 Hiroshi</span>
-          <a
-            href={REPO}
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-zinc-200 transition"
-          >
-            github.com/hiroshi-os/Hiroshi
-          </a>
-        </div>
-      </footer>
-
-      {/* Huge Interactive Title at the very bottom */}
-      <div className="w-full py-20 flex justify-center border-t dark:border-zinc-900 border-zinc-200 select-none overflow-hidden bg-zinc-50 dark:bg-[#09090b]">
-        <GiantInteractiveTitle />
+        </footer>
       </div>
     </div>
   );
