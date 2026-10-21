@@ -262,10 +262,10 @@ export default function HomePage() {
               </ExternalLink>
 
               <ExternalLink
-                href={REPO}
+                href={DOCS}
                 className="inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
-                Read the source
+                Read the docs
                 <span aria-hidden="true">→</span>
               </ExternalLink>
             </div>
