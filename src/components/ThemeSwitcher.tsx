@@ -1,15 +1,20 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+// The theme is only known in the browser, so the switcher renders a placeholder
+// on the server and the real control after the hydration. `useSyncExternalStore`
+// says that without the setState-in-an-effect the lint rule complains about.
+const emptySubscribe = () => () => {};
 
 export function PixelThemeSwitcher() {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   if (!mounted) {
     return (

@@ -14,8 +14,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hiroshi OS",
-  description: "Parallel agents, Bare-metal performance, No cloud dependencies",
+  title: "Hiroshi - a GPU-native multi-agent cockpit",
+  description:
+    "Hiroshi is a multi-agent orchestration cockpit rendered on the GPU with GPUIX. No Electron, no web view: the transcript, the composer and the window chrome are one GPU surface.",
+  metadataBase: new URL("https://www.hiroshios.xyz"),
+  openGraph: {
+    title: "Hiroshi - a GPU-native multi-agent cockpit",
+    description:
+      "A multi-agent orchestration cockpit rendered on the GPU with GPUIX.",
+    url: "https://www.hiroshios.xyz",
+    siteName: "Hiroshi",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hiroshi - a GPU-native multi-agent cockpit",
+    description:
+      "A multi-agent orchestration cockpit rendered on the GPU with GPUIX.",
+  },
 };
 
 export default function RootLayout({
