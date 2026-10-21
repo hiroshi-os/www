@@ -4,37 +4,51 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PixelThemeSwitcher } from "../components/ThemeSwitcher";
 
-function InteractiveTitle() {
-  const base = `██   ██  ███████  ██████    ██████   ██████  ██   ██  ███████
+const DOCS = "https://docs.hiroshios.xyz";
+const REPO = "https://github.com/hiroshi-os/Hiroshi";
+const RELEASES = `${REPO}/releases`;
+const CHANGELOG = `${REPO}/blob/main/CHANGELOG.md`;
+const MILESTONE = `${REPO}/milestone/1`;
+const ISSUES = `${REPO}/issues`;
+
+const HIROSHI_ASCII = `██   ██  ███████  ██████    ██████   ██████  ██   ██  ███████
 ██   ██    ██     ██   ██  ██    ██ ██       ██   ██    ██
-███████    ██     ██████   ██    ██  ██████  ███████    ██
+██████    ██     ██████   ██    ██  ██████  ███████    ██
 ██   ██    ██     ██   ██  ██    ██       ██ ██   ██    ██
 ██   ██  ███████  ██   ██   ██████   ██████  ██   ██  ███████`;
 
-  const [display, setDisplay] = useState(base);
+const GLITCH_GLYPHS = ["░", "▒", "▓", "X", "0", "1", "?", "*", "#", "H", "I", "R", "O", "S", "H", "I"];
+
+function useGlitchTitle() {
+  const [glitch, setGlitch] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    if (!isHovered) {
-      setDisplay(base);
-      return;
-    }
+    if (!isHovered) return;
 
     const interval = setInterval(() => {
-      const chars = base.split("");
+      const chars = HIROSHI_ASCII.split("");
       const glitched = chars.map((char) => {
         if (char === " " || char === "\n") return char;
         if (Math.random() < 0.15) {
-          const glyphs = ["░", "▒", "▓", "X", "0", "1", "?", "*", "#", "H", "I", "R", "O", "S", "H", "I"];
-          return glyphs[Math.floor(Math.random() * glyphs.length)];
+          return GLITCH_GLYPHS[Math.floor(Math.random() * GLITCH_GLYPHS.length)];
         }
         return char;
       });
-      setDisplay(glitched.join(""));
+      setGlitch(glitched.join(""));
     }, 80);
 
     return () => clearInterval(interval);
   }, [isHovered]);
+
+  // The clean title is derived, so the pointer leaving it needs no reset.
+  const display = isHovered && glitch !== null ? glitch : HIROSHI_ASCII;
+
+  return { display, isHovered, setIsHovered };
+}
+
+function InteractiveTitle() {
+  const { display, isHovered, setIsHovered } = useGlitchTitle();
 
   return (
     <div
@@ -45,7 +59,7 @@ function InteractiveTitle() {
       <pre
         className={`text-[10px] sm:text-xs leading-none font-bold tracking-tight inline-block text-left transition-colors duration-150 ${
           isHovered
-            ? "text-emerald-500 dark:text-emerald-400 font-mono"
+            ? "text-accent-500 dark:text-accent-400 font-mono"
             : "dark:text-zinc-50 text-zinc-900 font-mono"
         }`}
       >
@@ -56,36 +70,7 @@ function InteractiveTitle() {
 }
 
 function GiantInteractiveTitle() {
-  const base = `██   ██  ███████  ██████    ██████   ██████  ██   ██  ███████
-██   ██    ██     ██   ██  ██    ██ ██       ██   ██    ██
-███████    ██     ██████   ██    ██  ██████  ███████    ██
-██   ██    ██     ██   ██  ██    ██       ██ ██   ██    ██
-██   ██  ███████  ██   ██   ██████   ██████  ██   ██  ███████`;
-
-  const [display, setDisplay] = useState(base);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    if (!isHovered) {
-      setDisplay(base);
-      return;
-    }
-
-    const interval = setInterval(() => {
-      const chars = base.split("");
-      const glitched = chars.map((char) => {
-        if (char === " " || char === "\n") return char;
-        if (Math.random() < 0.15) {
-          const glyphs = ["░", "▒", "▓", "X", "0", "1", "?", "*", "#", "H", "I", "R", "O", "S", "H", "I"];
-          return glyphs[Math.floor(Math.random() * glyphs.length)];
-        }
-        return char;
-      });
-      setDisplay(glitched.join(""));
-    }, 80);
-
-    return () => clearInterval(interval);
-  }, [isHovered]);
+  const { display, isHovered, setIsHovered } = useGlitchTitle();
 
   return (
     <div
@@ -96,13 +81,80 @@ function GiantInteractiveTitle() {
       <pre
         className={`text-[3vw] md:text-[2vw] leading-none font-bold tracking-tight inline-block text-left transition-colors duration-150 ${
           isHovered
-            ? "text-emerald-500 dark:text-emerald-400 font-mono"
+            ? "text-accent-500 dark:text-accent-400 font-mono"
             : "dark:text-zinc-50 text-zinc-900 font-mono"
         }`}
       >
         {display}
       </pre>
     </div>
+  );
+}
+
+const STACK = [
+  { name: "GPUIX", href: "https://github.com/remorses/gpuix" },
+  { name: "GPUI", href: "https://github.com/zed-industries/zed" },
+  { name: "React", href: "https://react.dev" },
+  { name: "Bun", href: "https://bun.sh" },
+];
+
+const PILLARS = [
+  {
+    title: "The cockpit",
+    body: "A transcript, a composer, a conversation sidebar, an inspector and a settings view, with the model, the reasoning level, the access mode and the mode right under the field.",
+  },
+  {
+    title: "The surfaces",
+    body: "A browser, a terminal, a file browser and a review panel in the right drawer, so the run and the work it touches sit next to each other.",
+  },
+  {
+    title: "The window",
+    body: "No native titlebar. The chrome spans the whole window, and the titlebar drags it, maximizes it and restores it on every platform.",
+  },
+];
+
+const STEPS = [
+  {
+    title: "Run.",
+    body: "Clone the repository, install with Bun, and start the cockpit. The GPUIX native addon ships prebuilt for macOS, Windows and Linux.",
+  },
+  {
+    title: "Drive.",
+    body: "Send a draft. The transcript fills with the turns of the run, and the inspector reports what the agents are doing while they do it.",
+  },
+  {
+    title: "Watch.",
+    body: "Open the browser, the terminal, the files or the review surface on the right. The command palette is one keypress away.",
+  },
+];
+
+const FAQ = [
+  {
+    question: "Is Hiroshi a web app?",
+    answer:
+      "No. There is no Electron, no web view and no DOM. The interface is painted on the GPU through GPUIX, the React reconciler over Zed's native GPUI engine, at 120 frames per second.",
+  },
+  {
+    question: "What does it need to run?",
+    answer:
+      "Bun and a GPU. Metal on macOS, Direct3D on Windows, Vulkan on Linux. The native addon is prebuilt for all three, so there is no Rust toolchain to install.",
+  },
+  {
+    question: "Where do the models run?",
+    answer:
+      "Wherever you point them. The cockpit is the interface to a run: it drives the agents, holds the transcript, and keeps the surfaces next to the work.",
+  },
+];
+
+function NavLink({ href, children, external = true }: { href: string; children: React.ReactNode; external?: boolean }) {
+  return (
+    <a
+      href={href}
+      {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+      className="hover:text-zinc-900 dark:hover:text-zinc-100 text-zinc-650 dark:text-zinc-400 transition"
+    >
+      {children}
+    </a>
   );
 }
 
@@ -118,7 +170,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-zinc-50 dark:bg-[#09090b] text-zinc-800 dark:text-zinc-300 flex flex-col font-mono selection:bg-emerald-500/20 selection:text-emerald-300 transition-colors duration-200">
+    <div className="relative min-h-screen bg-zinc-50 dark:bg-[#09090b] text-zinc-800 dark:text-zinc-300 flex flex-col font-mono selection:bg-accent-500/20 selection:text-accent-300 transition-colors duration-200">
       <div className="dither-overlay" />
       {/* Custom Centered Navigation Bar */}
       <nav
@@ -128,84 +180,59 @@ export default function HomePage() {
             : "border-b border-transparent"
         }`}
       >
-        <div className="flex items-center space-x-2">
+        <Link href="/" className="flex items-center space-x-2">
           <div className="h-5 w-5 border border-zinc-700 bg-zinc-900 flex items-center justify-center font-bold text-zinc-100 text-[10px]">
             H
           </div>
           <span className="font-bold tracking-widest text-zinc-900 dark:text-zinc-100">
             HIROSHI
           </span>
-        </div>
+        </Link>
 
         <span className="text-zinc-300 dark:text-zinc-800">|</span>
 
-        <a
-          href="#"
-          className="hover:text-zinc-900 dark:hover:text-zinc-100 text-zinc-650 dark:text-zinc-400 transition"
-        >
-          Changelog
-        </a>
-        <a
-          href="/docs"
-          className="hover:text-zinc-900 dark:hover:text-zinc-100 text-zinc-650 dark:text-zinc-400 transition"
-        >
-          Docs
-        </a>
-        <a
-          href="#"
-          className="hover:text-zinc-900 dark:hover:text-zinc-100 text-zinc-650 dark:text-zinc-400 transition"
-        >
-          Team
-        </a>
-        <a
-          href="#"
-          className="hover:text-zinc-900 dark:hover:text-zinc-100 text-zinc-650 dark:text-zinc-400 transition"
-        >
-          Enterprise
-        </a>
-        <a
-          href="#"
-          className="hover:text-zinc-900 dark:hover:text-zinc-100 text-zinc-650 dark:text-zinc-400 transition"
-        >
-          Join Us
-        </a>
+        <NavLink href={DOCS}>Docs</NavLink>
+        <NavLink href={CHANGELOG}>Changelog</NavLink>
+        <NavLink href={REPO}>Repository</NavLink>
+        <NavLink href={RELEASES}>Releases</NavLink>
 
         <span className="text-zinc-305 dark:text-zinc-800">|</span>
 
-        <a
-          href="/docs/getting-started/installation"
-          className="custom-download-btn px-4 py-1.5 rounded text-xs font-semibold transition"
-        >
-          Download
-        </a>
+        <NavLink href={`${DOCS}/getting-started`} external={false}>
+          <span className="custom-download-btn px-4 py-1.5 rounded text-xs font-semibold transition">
+            Get started
+          </span>
+        </NavLink>
 
         <PixelThemeSwitcher />
       </nav>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center pt-40 pb-20 px-6 max-w-6xl mx-auto w-full relative z-10">
-        {/* Corrected Big Block ASCII Title: HIROSHI */}
         <InteractiveTitle />
 
         {/* Hero Copy */}
         <div className="text-center max-w-2xl mb-14">
           <h2 className="text-xl dark:text-zinc-100 text-zinc-900 font-semibold mb-5 tracking-tight">
-            Parallel agents, Bare-metal performance, No cloud dependencies
+            A GPU-native cockpit for multi-agent development swarms
           </h2>
           <p className="text-sm dark:text-zinc-300 text-zinc-600 leading-relaxed font-sans">
-            An ultra-lightweight, self-hosted, multi-agent AI operating system
-            built in Rust. Run parallel coding loops locally, sandboxed, and
-            100% offline.
+            Hiroshi is a multi-agent orchestration cockpit rendered on the GPU
+            with GPUIX. No Electron, no web view: the transcript, the composer
+            and the window chrome are one GPU surface, painted at 120 frames
+            per second.
           </p>
         </div>
 
         {/* Hero CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-4 mb-20 w-full sm:w-auto">
           <a
-            href="/docs/getting-started/installation"
+            href={`${DOCS}/getting-started`}
+            target="_blank"
+            rel="noreferrer"
             className="w-full sm:w-auto bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-950 px-8 py-3.5 rounded-lg text-sm font-semibold transition flex items-center justify-center space-x-2 font-sans shadow"
           >
-            <span>Download Hiroshi</span>
+            <span>Get started</span>
             <svg
               className="w-4.5 h-4.5"
               fill="none"
@@ -222,10 +249,12 @@ export default function HomePage() {
           </a>
 
           <a
-            href="/docs"
-            className="w-full sm:w-auto border dark:border-zinc-800 border-zinc-300 dark:bg-zinc-900/30 bg-zinc-100/50 hover:dark:bg-zinc-900/80 hover:bg-zinc-200/80 dark:text-zinc-200 text-zinc-700 px-8 py-3.5 rounded-lg text-sm font-semibold transition flex items-center justify-center space-x-2 font-sans"
+            href={REPO}
+            target="_blank"
+            rel="noreferrer"
+            className="w-full sm:w-auto border dark:border-zinc-800 border-zinc-300 dark:bg-zinc-900/30 bg-zinc-100/50 hover:dark:bg-zinc-900/80 hover:dark:border-zinc-200 text-zinc-700 dark:text-zinc-200 px-8 py-3.5 rounded-lg text-sm font-semibold transition flex items-center justify-center space-x-2 font-sans"
           >
-            <span>Learn how it works</span>
+            <span>Read the source</span>
             <span className="text-zinc-400">→</span>
           </a>
         </div>
@@ -246,147 +275,64 @@ export default function HomePage() {
               <span className="text-zinc-400 dark:text-zinc-600 mr-3 select-none">
                 $
               </span>
-              git clone https://github.com/hiroshi-os/hiroshi.git
+              git clone https://github.com/hiroshi-os/Hiroshi
             </div>
             <div className="flex">
               <span className="text-zinc-400 dark:text-zinc-600 mr-3 select-none">
                 $
               </span>
-              cd hiroshi
+              cd Hiroshi
             </div>
             <div className="flex">
               <span className="text-zinc-400 dark:text-zinc-600 mr-3 select-none">
                 $
               </span>
-              cargo build --release
+              bun install
             </div>
             <div className="flex">
               <span className="text-zinc-400 dark:text-zinc-600 mr-3 select-none">
                 $
               </span>
-              ./target/release/hiroshi
+              bun run dev
             </div>
           </div>
         </div>
 
-        {/* Powered by Grid / Logo Wall */}
+        {/* Powered by */}
         <div className="w-full text-center mb-28">
           <div className="text-xs uppercase tracking-widest dark:text-zinc-500 text-zinc-400 mb-10 font-bold">
             [ Powered by ]
           </div>
           <div className="flex flex-wrap items-center justify-center gap-12 max-w-4xl mx-auto select-none">
-            {/* Vercel */}
-            <img
-              src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/vercel/wordmark-light.svg"
-              alt="Vercel"
-              className="h-6 w-auto opacity-75 hover:opacity-100 transition duration-200 dark:hidden block"
-            />
-            <img
-              src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/vercel/wordmark-dark.svg"
-              alt="Vercel"
-              className="h-6 w-auto opacity-75 hover:opacity-100 transition duration-200 hidden dark:block"
-            />
-
-            {/* OpenAI */}
-            <img
-              src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/openai/wordmark-light.svg"
-              alt="OpenAI"
-              className="h-6 w-auto opacity-75 hover:opacity-100 transition duration-200 dark:hidden block"
-            />
-            <img
-              src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/openai/wordmark-dark.svg"
-              alt="OpenAI"
-              className="h-6 w-auto opacity-75 hover:opacity-100 transition duration-200 hidden dark:block"
-            />
-
-            {/* Cursor */}
-            <img
-              src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/cursor/wordmark-light.svg"
-              alt="Cursor"
-              className="h-5 w-auto opacity-75 hover:opacity-100 transition duration-200 dark:hidden block"
-            />
-            <img
-              src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/cursor/wordmark-dark.svg"
-              alt="Cursor"
-              className="h-5 w-auto opacity-75 hover:opacity-100 transition duration-200 hidden dark:block"
-            />
-
-            {/* GitHub */}
-            <img
-              src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/github/wordmark-light.svg"
-              alt="GitHub"
-              className="h-6 w-auto opacity-75 hover:opacity-100 transition duration-200 dark:hidden block"
-            />
-            <img
-              src="https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/github/wordmark-dark.svg"
-              alt="GitHub"
-              className="h-6 w-auto opacity-75 hover:opacity-100 transition duration-200 hidden dark:block"
-            />
+            {STACK.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                className="text-lg font-bold tracking-widest text-zinc-400 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-100 transition duration-200"
+              >
+                {item.name}
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* Testimonials Grid */}
+        {/* What the cockpit is */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-32 text-sm tracking-normal font-sans">
-          <div className="p-6 border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/10 bg-zinc-150/10 rounded-xl flex flex-col justify-between space-y-6">
-            <p className="dark:text-zinc-200 text-zinc-800 italic leading-relaxed">
-              "Hiroshi's offline Ollama execution and local vector search give
-              us full code privacy with under 5ms execution latency."
-            </p>
-            <div className="flex items-center space-x-3">
-              <div className="h-8 w-8 rounded-full bg-zinc-800 text-zinc-200 flex items-center justify-center font-bold text-xs">
-                BL
-              </div>
-              <div>
-                <span className="font-semibold dark:text-zinc-100 text-zinc-900 block">
-                  Brandon
-                </span>
-                <span className="dark:text-zinc-400 text-zinc-600 block text-xs">
-                  Co-founder
-                </span>
-              </div>
+          {PILLARS.map((pillar) => (
+            <div
+              key={pillar.title}
+              className="p-6 border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/10 bg-zinc-150/10 rounded-xl flex flex-col justify-between space-y-6"
+            >
+              <h4 className="font-semibold dark:text-zinc-100 text-zinc-900 text-base">
+                {pillar.title}
+              </h4>
+              <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
+                {pillar.body}
+              </p>
             </div>
-          </div>
-
-          <div className="p-6 border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/10 bg-zinc-150/10 rounded-xl flex flex-col justify-between space-y-6">
-            <p className="dark:text-zinc-200 text-zinc-800 italic leading-relaxed">
-              "Running parallel, background-active developer loops with
-              whitelisted commands is an absolute lifesaver. We run tests
-              overnight and review diffs."
-            </p>
-            <div className="flex items-center space-x-3">
-              <div className="h-8 w-8 rounded-full bg-zinc-800 text-zinc-200 flex items-center justify-center font-bold text-xs">
-                JP
-              </div>
-              <div>
-                <span className="font-semibold dark:text-zinc-100 text-zinc-900 block">
-                  Josh
-                </span>
-                <span className="dark:text-zinc-400 text-zinc-600 block text-xs">
-                  Founder
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 border dark:border-zinc-800 border-zinc-200 dark:bg-zinc-900/10 bg-zinc-150/10 rounded-xl flex flex-col justify-between space-y-6">
-            <p className="dark:text-zinc-200 text-zinc-800 italic leading-relaxed">
-              "The Telegram integration and inquire setup wizard make it the
-              most polished developer tool I've seen this year."
-            </p>
-            <div className="flex items-center space-x-3">
-              <div className="h-8 w-8 rounded-full bg-zinc-800 text-zinc-200 flex items-center justify-center font-bold text-xs">
-                NX
-              </div>
-              <div>
-                <span className="font-semibold dark:text-zinc-100 text-zinc-900 block">
-                  Pieter
-                </span>
-                <span className="dark:text-zinc-400 text-zinc-600 block text-xs">
-                  Founding Engineer
-                </span>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* How It Works Section */}
@@ -398,50 +344,21 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-8 font-sans text-sm">
-            <div className="flex items-start space-x-5">
-              <span className="font-mono dark:text-zinc-500 text-zinc-400 font-bold text-base">
-                1.
-              </span>
-              <div>
-                <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-1.5 text-base">
-                  Setup.
-                </h4>
-                <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                  Start the binary. The inquire onboarding wizard automatically
-                  detects Ollama ports and configures Telegram tokens.
-                </p>
+            {STEPS.map((step, index) => (
+              <div key={step.title} className="flex items-start space-x-5">
+                <span className="font-mono dark:text-zinc-500 text-zinc-400 font-bold text-base">
+                  {index + 1}.
+                </span>
+                <div>
+                  <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-1.5 text-base">
+                    {step.title}
+                  </h4>
+                  <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
+                    {step.body}
+                  </p>
+                </div>
               </div>
-            </div>
-
-            <div className="flex items-start space-x-5">
-              <span className="font-mono dark:text-zinc-500 text-zinc-400 font-bold text-base">
-                2.
-              </span>
-              <div>
-                <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-1.5 text-base">
-                  Configure.
-                </h4>
-                <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                  Declare agent prompts and whitelisted tools inside AGENTS.md.
-                  Tokio loops route agent actions dynamically.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-5">
-              <span className="font-mono dark:text-zinc-500 text-zinc-400 font-bold text-base">
-                3.
-              </span>
-              <div>
-                <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-1.5 text-base">
-                  Extend.
-                </h4>
-                <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                  Drop custom scripts into ~/.hiroshi/skills/ or connect
-                  community JSON-RPC stdio MCP servers.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -454,48 +371,32 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-8 font-sans text-sm">
-            <div>
-              <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-2 text-base">
-                Does Hiroshi require an internet connection?
-              </h4>
-              <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                No. Hiroshi is 100% offline-capable, utilizing local Ollama
-                server instances and native Rust vector computations.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-2 text-base">
-                Is execution secure?
-              </h4>
-              <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                Yes. Scripts execute strictly inside a path-sanitized workspace
-                with whitelisted commands and a 10s timeout circuit breaker.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-2 text-base">
-                What is the resource footprint?
-              </h4>
-              <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
-                Hiroshi runs as a lightweight background daemon consuming less
-                than 40 MB RAM with under 5ms execution loop latency.
-              </p>
-            </div>
+            {FAQ.map((entry) => (
+              <div key={entry.question}>
+                <h4 className="font-semibold dark:text-zinc-200 text-zinc-900 mb-2 text-base">
+                  {entry.question}
+                </h4>
+                <p className="dark:text-zinc-400 text-zinc-600 leading-relaxed">
+                  {entry.answer}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Bottom CTA Block */}
         <div className="w-full text-center border-t dark:border-zinc-900 border-zinc-200 pt-20 flex flex-col items-center">
           <p className="text-sm dark:text-zinc-400 text-zinc-600 mb-8 font-sans">
-            Accessible from WhatsApp, Telegram, or any chat app you already use.
+            The cockpit, the documentation, and the source. Everything runs on
+            your machine.
           </p>
           <a
-            href="/docs/getting-started/installation"
+            href={`${DOCS}/getting-started`}
+            target="_blank"
+            rel="noreferrer"
             className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-950 px-8 py-4 rounded-lg text-sm font-semibold transition flex items-center justify-center space-x-2 font-sans shadow"
           >
-            <span>Download Hiroshi</span>
+            <span>Get started</span>
             <svg
               className="w-4.5 h-4.5"
               fill="none"
@@ -518,33 +419,13 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
           <div>
             <span className="text-xs uppercase tracking-wider dark:text-zinc-500 text-zinc-400 block mb-4 font-mono font-bold">
-              [Company]
+              [Project]
             </span>
             <div className="space-y-2 dark:text-zinc-400 text-zinc-600">
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Team
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Blog
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Enterprise
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Join us
-              </a>
+              <NavLink href={REPO}>Repository</NavLink>
+              <NavLink href={RELEASES}>Releases</NavLink>
+              <NavLink href={MILESTONE}>Milestone</NavLink>
+              <NavLink href={ISSUES}>Issues</NavLink>
             </div>
           </div>
 
@@ -553,83 +434,48 @@ export default function HomePage() {
               [Resources]
             </span>
             <div className="space-y-2 dark:text-zinc-400 text-zinc-600">
-              <a
-                href="/docs"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Docs
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Changelog
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Brand kit
-              </a>
+              <NavLink href={DOCS}>Docs</NavLink>
+              <NavLink href={CHANGELOG}>Changelog</NavLink>
+              <NavLink href={`${DOCS}/architecture`}>Architecture</NavLink>
+              <NavLink href={`${DOCS}/window`}>The window</NavLink>
             </div>
           </div>
 
           <div>
             <span className="text-xs uppercase tracking-wider dark:text-zinc-500 text-zinc-400 block mb-4 font-mono font-bold">
-              [Legal]
+              [Community]
             </span>
             <div className="space-y-2 dark:text-zinc-400 text-zinc-600">
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Privacy
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Terms
-              </a>
+              <NavLink href={ISSUES}>Open an issue</NavLink>
+              <NavLink href={`${REPO}/discussions`}>Discussions</NavLink>
+              <NavLink href={`${DOCS}/development`}>Development</NavLink>
+              <NavLink href={`${DOCS}/versioning`}>Versioning</NavLink>
             </div>
           </div>
 
           <div>
             <span className="text-xs uppercase tracking-wider dark:text-zinc-500 text-zinc-400 block mb-4 font-mono font-bold">
-              [Connect]
+              [Built with]
             </span>
             <div className="space-y-2 dark:text-zinc-400 text-zinc-600">
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                X
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                YouTube
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Reddit
-              </a>
-              <a
-                href="#"
-                className="block hover:dark:text-zinc-200 hover:text-zinc-900 transition"
-              >
-                Discord
-              </a>
+              <NavLink href="https://github.com/remorses/gpuix">GPUIX</NavLink>
+              <NavLink href="https://github.com/zed-industries/zed">GPUI</NavLink>
+              <NavLink href="https://react.dev">React</NavLink>
+              <NavLink href="https://bun.sh">Bun</NavLink>
             </div>
           </div>
         </div>
 
         <div className="max-w-6xl mx-auto flex items-center justify-between text-xs dark:text-zinc-500 text-zinc-400 font-mono">
-          <span>© 2026 Tom</span>
-          <span>tomlin7.com</span>
+          <span>© 2026 Hiroshi</span>
+          <a
+            href={REPO}
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-zinc-200 transition"
+          >
+            github.com/hiroshi-os/Hiroshi
+          </a>
         </div>
       </footer>
 

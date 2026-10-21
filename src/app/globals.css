@@ -2,6 +2,13 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+/* The accent of the app: the coral of the cockpit. */
+@theme {
+  --color-accent-300: #f2b29c;
+  --color-accent-400: #ea9070;
+  --color-accent-500: #e2795b;
+}
+
 /* Scoped Monospace Font for Landing Page elements */
 .font-mono, .font-mono * {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
