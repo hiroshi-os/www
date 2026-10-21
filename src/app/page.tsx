@@ -175,7 +175,7 @@ function ExternalLink({
 export default function HomePage() {
   return (
     <div className="min-h-dvh bg-background text-foreground antialiased">
-      <div className="mx-auto w-full max-w-[1100px] border-border/70 md:border-x">
+      <div className="mx-auto w-full max-w-[1100px] border-border md:border-x">
         <header className="flex h-16 items-center justify-between px-5 md:px-10">
           <Link href="/" className="flex items-center gap-2.5">
             <Image
@@ -287,7 +287,7 @@ export default function HomePage() {
           </section>
 
           <section className="px-5 pb-14 md:px-10">
-            <div className="overflow-hidden rounded-xl border border-border/70 bg-card">
+            <div className="overflow-hidden rounded-xl border border-border bg-card">
               <Image
                 src="/cockpit.png"
                 alt="The Hiroshi cockpit: the conversation sidebar, the transcript and the composer"
@@ -301,7 +301,7 @@ export default function HomePage() {
           <section className="border-t">
             <div className="px-5 pt-14 md:px-10">
               <div className="eyebrow">Why native</div>
-              <div className="mt-8 grid grid-cols-1 gap-px border-t bg-border/70 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-8 grid grid-cols-1 gap-px border-t bg-border sm:grid-cols-2 lg:grid-cols-3">
                 {FEATURES.map((feature) => (
                   <div key={feature.title} className="bg-background p-6 md:p-8">
                     <div className="flex items-center gap-2.5">
@@ -356,8 +356,8 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-lg border border-border/70 bg-card">
-                <div className="flex items-center justify-between border-b border-border/70 px-4 py-2.5">
+              <div className="overflow-hidden rounded-lg border border-border bg-card">
+                <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
                   <div className="flex items-center gap-1.5">
                     <span className="size-2.5 rounded-full bg-border" />
                     <span className="size-2.5 rounded-full bg-border" />
@@ -386,7 +386,7 @@ export default function HomePage() {
 
           <section className="border-t px-5 py-16 md:px-10 md:py-20">
             <div className="eyebrow">Questions</div>
-            <div className="mt-8 divide-y divide-border/70 border-t border-border/70">
+            <div className="mt-8 divide-y divide-border border-t border-border">
               {QUESTIONS.map((entry) => (
                 <div key={entry.question} className="py-6 md:py-7">
                   <h3 className="text-[15px] font-medium">{entry.question}</h3>
